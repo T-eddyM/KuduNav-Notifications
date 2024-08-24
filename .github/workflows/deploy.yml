@@ -34,6 +34,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Create Deployment Directory
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+          HOST: ${{ secrets.EC2_HOST }}
+          USER: ${{ secrets.EC2_USER }}
+        run: |
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ env.USER }}@${{ env.HOST }} "mkdir -p /home/${{ env.USER }}/KuduNav-Notifications"
+
+
       - name: Deploy to EC2
         env:
           PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
@@ -44,8 +53,8 @@ jobs:
           chmod 600 private_key.pem
 
           # Deploy files to the EC2 instance
-          scp -i private_key.pem -o StrictHostKeyChecking=no -r . ${{ env.USER }}@${{ env.HOST }}:/home/${{ env.USER }}
+          scp -i private_key.pem -o StrictHostKeyChecking=no -r . ${{ env.USER }}@${{ env.HOST }}:/home/${{ env.USER }}/KuduNav-Notifications
 
           # SSH into the EC2 instance and run the deployment script
-          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ env.USER }}@${{ env.HOST }} "cd /home/${{ env.USER }} && ./deploy_script.sh"
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ env.USER }}@${{ env.HOST }} "cd /home/${{ env.USER }}/KuduNav-Notifications && ./deploy_script.sh"
           
