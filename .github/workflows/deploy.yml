@@ -34,22 +34,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Debug Environment Variables
-        env:
-          HOST: ${{ secrets.EC2_HOST }}
-          USER: ${{ secrets.EC2_USER }}
-        run: |
-          echo "HOST: ${{ env.HOST }}"
-          echo "USER: ${{ env.USER }}"
-
-      - name: Save and Test Private Key
-        env:
-          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-        run: |
-          echo "$PRIVATE_KEY" > private_key.pem
-          chmod 600 private_key.pem
-          ls -l private_key.pem
-
       - name: Deploy to EC2
         env:
           PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
@@ -60,3 +44,4 @@ jobs:
           chmod 600 private_key.pem
           scp -i private_key.pem -o StrictHostKeyChecking=no -r . $USER@$HOST:/path/to/deploy
           ssh -i private_key.pem -o StrictHostKeyChecking=no $USER@$HOST "cd /path/to/deploy && ./deploy_script.sh"
+          
