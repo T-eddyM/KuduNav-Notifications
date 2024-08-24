@@ -44,8 +44,8 @@ jobs:
           chmod 600 private_key.pem
 
           # Deploy files to the EC2 instance
-          scp -i private_key.pem -o StrictHostKeyChecking=no -r . ${{ env.USER }}@${{ env.HOST }}:/home/${{ env.USER }}/KuduNav-Notifications
+          scp -i private_key.pem -o StrictHostKeyChecking=no -r . ${{ env.USER }}@${{ env.HOST }}:/home/${{ env.USER }}
 
           # SSH into the EC2 instance and run the deployment script
-          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ env.USER }}@${{ env.HOST }} "cd /home/${{ env.USER }}/KuduNav-Notifications && ./deploy_script.sh"
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ env.USER }}@${{ env.HOST }} "cd /home/${{ env.USER }} && ./deploy_script.sh"
           
