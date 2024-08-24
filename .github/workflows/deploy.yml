@@ -13,19 +13,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          python-version: '3.x'
+          node-version: '18' # Use the Node.js version required by your project
 
-      # Uncomment these steps if needed
-      # - name: Install dependencies
-      #   run: |
-      #     pip install -r requirements.txt
+      - name: Install dependencies
+        run: npm install
 
-      # - name: Run tests
-      #   run: |
-      #     pytest
+      - name: Run tests
+        run: npm test
 
   deploy:
     runs-on: ubuntu-latest
@@ -53,10 +50,7 @@ jobs:
           chmod 600 private_key.pem
           ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ env.USER }}@${{ env.HOST }} "mkdir -p /home/${{ env.USER }}/KuduNav-Notifications"
 
-      - name: List Files for Deployment
-        run: ls -la
-
-      - name: Deploy to EC2
+      - name: Deploy Files to EC2
         env:
           PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
           HOST: ${{ secrets.EC2_HOST }}
@@ -64,9 +58,36 @@ jobs:
         run: |
           echo "$PRIVATE_KEY" > private_key.pem
           chmod 600 private_key.pem
-          
+
           # Deploy files to the EC2 instance
           scp -i private_key.pem -o StrictHostKeyChecking=no -r * ${{ env.USER }}@${{ env.HOST }}:/home/${{ env.USER }}/KuduNav-Notifications
-          
-          # SSH into the EC2 instance and run the deployment script
-          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ env.USER }}@${{ env.HOST }} "cd /home/${{ env.USER }}/KuduNav-Notifications && ./deploy_script.sh"
+
+      - name: Verify Files on EC2 Instance
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+          HOST: ${{ secrets.EC2_HOST }}
+          USER: ${{ secrets.EC2_USER }}
+        run: |
+          echo "$PRIVATE_KEY" > private_key.pem
+          chmod 600 private_key.pem
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ env.USER }}@${{ env.HOST }} "ls -la /home/${{ env.USER }}/KuduNav-Notifications"
+
+      - name: Install Node.js Dependencies on EC2
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+          HOST: ${{ secrets.EC2_HOST }}
+          USER: ${{ secrets.EC2_USER }}
+        run: |
+          echo "$PRIVATE_KEY" > private_key.pem
+          chmod 600 private_key.pem
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ env.USER }}@${{ env.HOST }} "cd /home/${{ env.USER }}/KuduNav-Notifications && npm install"
+
+      - name: Start Node.js Server
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+          HOST: ${{ secrets.EC2_HOST }}
+          USER: ${{ secrets.EC2_USER }}
+        run: |
+          echo "$PRIVATE_KEY" > private_key.pem
+          chmod 600 private_key.pem
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ env.USER }}@${{ env.HOST }} "cd /home/${{ env.USER }}/KuduNav-Notifications && nohup npm start &"
