@@ -16,13 +16,13 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18' # Use the Node.js version required by your project
+          node-version: '18'
 
       - name: Install dependencies
         run: npm install
 
-      #- name: Run tests
-      #  run: npm test
+      - name: Run tests
+        run: npm test
 
   deploy:
     runs-on: ubuntu-latest
@@ -58,8 +58,6 @@ jobs:
         run: |
           echo "$PRIVATE_KEY" > private_key.pem
           chmod 600 private_key.pem
-
-          # Deploy files to the EC2 instance
           scp -i private_key.pem -o StrictHostKeyChecking=no -r * ${{ env.USER }}@${{ env.HOST }}:/home/${{ env.USER }}/KuduNav-Notifications
 
       - name: Verify Files on EC2 Instance
@@ -71,6 +69,16 @@ jobs:
           echo "$PRIVATE_KEY" > private_key.pem
           chmod 600 private_key.pem
           ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ env.USER }}@${{ env.HOST }} "ls -la /home/${{ env.USER }}/KuduNav-Notifications"
+
+      - name: Install Node.js and npm on EC2
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+          HOST: ${{ secrets.EC2_HOST }}
+          USER: ${{ secrets.EC2_USER }}
+        run: |
+          echo "$PRIVATE_KEY" > private_key.pem
+          chmod 600 private_key.pem
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ env.USER }}@${{ env.HOST }} "sudo yum install -y nodejs npm"
 
       - name: Install Node.js Dependencies on EC2
         env:
