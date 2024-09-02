@@ -1,4 +1,4 @@
-import express from "express";
+import express, { json } from "express";
 
 const app = express();
 
@@ -8,6 +8,8 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
   });
 
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on port ${PORT}`);
-  });
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+app.use(json());
