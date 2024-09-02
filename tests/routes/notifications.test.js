@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app from '../index'; // Import your app
+import app from '../../index';
 
 describe('Notifications API', () => {
   let notificationId; 
