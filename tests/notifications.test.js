@@ -1,12 +1,21 @@
 import request from 'supertest';
-import app from "../index";
+import app from '../index'; // Import your app
 
 describe('Notifications API', () => {
   let notificationId; 
+  let server;
+
+  beforeAll((done) => {
+    server = app.listen(3000, done);
+  });
+
+  afterAll((done) => {
+    server.close(done);
+  });
 
   // Test Create Notification
   it('should create a new notification', async () => {
-    const response = await request(app)
+    const response = await request(server) // Use server instance
       .post('/notifications')
       .send({
         userId: 'user1',
@@ -27,7 +36,7 @@ describe('Notifications API', () => {
 
   // Test Get a Notification
   it('should retrieve a specific notification by ID', async () => {
-    const response = await request(app)
+    const response = await request(server) // Use server instance
       .get(`/notifications/${notificationId}`)
       .expect('Content-Type', /json/)
       .expect(200);
@@ -38,7 +47,7 @@ describe('Notifications API', () => {
 
   // Test Get Notifications for a User
   it('should retrieve all notifications for a specific user', async () => {
-    const response = await request(app)
+    const response = await request(server) // Use server instance
       .get(`/notifications/user/user1`)
       .expect('Content-Type', /json/)
       .expect(200);
@@ -49,7 +58,7 @@ describe('Notifications API', () => {
 
   // Test Update a Notification
   it('should update an existing notification by ID', async () => {
-    const response = await request(app)
+    const response = await request(server) // Use server instance
       .post(`/notifications/${notificationId}`)
       .send({
         message: 'Bus departure in 10 minutes',
@@ -65,20 +74,20 @@ describe('Notifications API', () => {
 
   // Test Delete a Notification
   it('should delete a specific notification by ID', async () => {
-    await request(app)
+    await request(server) // Use server instance
       .delete(`/notifications/${notificationId}`)
       .expect('Content-Type', /json/)
       .expect(200);
 
     // Check if the notification was deleted
-    await request(app)
+    await request(server) // Use server instance
       .get(`/notifications/${notificationId}`)
       .expect(404);
   });
 
   // Test Mark Notification as Sent
   it('should mark a notification as sent', async () => {
-    const response = await request(app)
+    const response = await request(server) // Use server instance
       .post(`/notifications/${notificationId}/sent`)
       .expect('Content-Type', /json/)
       .expect(200);
@@ -88,11 +97,39 @@ describe('Notifications API', () => {
 
   // Test Mark Notification as Read
   it('should mark a notification as read', async () => {
-    const response = await request(app)
+    const response = await request(server) // Use server instance
       .post(`/notifications/${notificationId}/read`)
       .expect('Content-Type', /json/)
       .expect(200);
 
     expect(response.body.status).toBe('read');
+  });
+
+  // Test Register Device for Push Notifications
+  it('should register a device for push notifications', async () => {
+    const response = await request(server) // Use server instance
+      .post('/users/user1/device')
+      .send({
+        deviceToken: 'device123',
+        deviceType: 'iOS'
+      })
+      .expect('Content-Type', /json/)
+      .expect(200);
+
+    expect(response.body.message).toBe('Device registered successfully');
+  });
+
+  // Test Manage User Notification Preferences
+  it('should manage user notification preferences', async () => {
+    const response = await request(server) // Use server instance
+      .post('/users/user1/preferences')
+      .send({
+        receivePushNotifications: true,
+        notificationTypes: ['bus_departure', 'schedule_change']
+      })
+      .expect('Content-Type', /json/)
+      .expect(200);
+
+    expect(response.body.message).toBe('Notification preferences updated successfully');
   });
 });
