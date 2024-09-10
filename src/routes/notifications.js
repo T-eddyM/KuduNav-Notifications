@@ -58,4 +58,19 @@ router.post("/notifications/:id", (req, res) => {
 
 });
 
+//delete a notification by id
+router.delete("/notifications/:id", (req, res) => {
+    const { id } = req.params;
+
+    const index = notifications.findIndex(notification => notification.id == id);
+
+    if (index != -1){
+        notifications.splice(index, 1);
+        res.status(200).json({ message: 'Notification deleted successfully' });
+    } else {
+        res.status(404).json({ message: 'Notification not found' });
+    }
+
+});
+
 export default router;
