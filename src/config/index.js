@@ -1,7 +1,7 @@
 import express from "express";
 import router from "../routes/notifications.js";
 
-const app = express();
+export default app = express();
 
 app.use(express.json());
 app.use(router);
@@ -23,6 +23,3 @@ app.use(function (req, res, next) {
       next();
     }
   });
-
-export default app;
-
