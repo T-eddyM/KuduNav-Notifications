@@ -43,5 +43,19 @@ router.get("/notifications/user/:userId", (req, res) => {
 });
 
 //update a specific notification
+router.post("/notifications/:id", (req, res) => {
+    const { message, type, scheduleTime } = req.body;
+    const { id } = req.params;
+
+    const index = notifications.findIndex(notification => notification.id == id);
+
+    if (index != -1) {
+        notifications[index] = {...notifications[index], message, type, scheduleTime};
+        res.status(200).json(notifications[index]);
+    } else {
+        res.status(404).json({ message: 'Notification not found' });
+    }
+
+});
 
 export default router;
