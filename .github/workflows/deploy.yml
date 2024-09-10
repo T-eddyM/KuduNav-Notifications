@@ -1,105 +1,70 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline with Terraform
 
 on:
   push:
     branches:
-      - main
+      - main  # Only run on pushes to the main branch
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
+    env:
+      NODE_ENV: test
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout Code
+      uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18.x'  # Ensure this matches your Node.js version
 
-      - name: Install dependencies
-        run: npm install
+    - name: Install Dependencies
+      run: npm install
 
-      #- name: Run tests
-      #  run: npm test
+    - name: Run Tests
+      run: npm test
 
-  deploy:
+  terraform:
     runs-on: ubuntu-latest
-    needs: build
+    needs: test  # Ensure tests pass before running this job
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout Code
+      uses: actions/checkout@v3
 
-      - name: Save and Test Private Key
-        env:
-          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-        run: |
-          echo "$PRIVATE_KEY" > private_key.pem
-          chmod 600 private_key.pem
-          ls -l private_key.pem
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.6.0
 
-      - name: Create Deployment Directory
-        env:
-          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-          HOST: ${{ secrets.EC2_HOST }}
-          USER: ${{ secrets.EC2_USER }}
-        run: |
-          echo "$PRIVATE_KEY" > private_key.pem
-          chmod 600 private_key.pem
-          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ env.USER }}@${{ env.HOST }} "mkdir -p /home/${{ env.USER }}/KuduNav-Notifications"
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-2
 
-      - name: Deploy Files to EC2
-        env:
-          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-          HOST: ${{ secrets.EC2_HOST }}
-          USER: ${{ secrets.EC2_USER }}
-        run: |
-          echo "$PRIVATE_KEY" > private_key.pem
-          chmod 600 private_key.pem
-          scp -i private_key.pem -o StrictHostKeyChecking=no -r * ${{ env.USER }}@${{ env.HOST }}:/home/${{ env.USER }}/KuduNav-Notifications
+    - name: Initialize Terraform
+      run: terraform init
+      working-directory: infra/terraform  # Path to Terraform files
 
-      - name: Verify Files on EC2 Instance
-        env:
-          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-          HOST: ${{ secrets.EC2_HOST }}
-          USER: ${{ secrets.EC2_USER }}
-        run: |
-          echo "$PRIVATE_KEY" > private_key.pem
-          chmod 600 private_key.pem
-          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ env.USER }}@${{ env.HOST }} "ls -la /home/${{ env.USER }}/KuduNav-Notifications"
+    - name: Terraform Refresh
+      run: terraform refresh
+      working-directory: infra/terraform  # Path to Terraform files
 
-      - name: Install Node.js and npm on EC2
-        env:
-          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-          HOST: ${{ secrets.EC2_HOST }}
-          USER: ${{ secrets.EC2_USER }}
-        run: |
-          echo "$PRIVATE_KEY" > private_key.pem
-          chmod 600 private_key.pem
-          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ env.USER }}@${{ env.HOST }} "sudo yum install -y nodejs npm"
+    - name: Terraform Destroy Existing Instance
+      working-directory: infra/terraform
+      run: terraform destroy -auto-approve -target=aws_instance.app_server
 
-      - name: Install Node.js Dependencies on EC2
-        env:
-          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-          HOST: ${{ secrets.EC2_HOST }}
-          USER: ${{ secrets.EC2_USER }}
-        run: |
-          echo "$PRIVATE_KEY" > private_key.pem
-          chmod 600 private_key.pem
-          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ env.USER }}@${{ env.HOST }} "cd /home/${{ env.USER }}/KuduNav-Notifications && npm install"
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -out=tfplan
+      working-directory: infra/terraform  # Path to Terraform files
 
-      - name: Start Node.js Server
-        env:
-          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-          HOST: ${{ secrets.EC2_HOST }}
-          USER: ${{ secrets.EC2_USER }}
-        run: |
-          echo "$PRIVATE_KEY" > private_key.pem
-          chmod 600 private_key.pem
-          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ env.USER }}@${{ env.HOST }} "cd /home/${{ env.USER }}/KuduNav-Notifications && nohup node index.js > server.log 2>&1 &"
-
-
-# nohup allows the command to continue running in the background even after the SSH session ends.
-# npm start > server.log 2>&1 & redirects output to a log file and runs the command in the background.
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/main'
+      run: terraform apply -auto-approve tfplan
+      working-directory: infra/terraform  # Path to Terraform files
