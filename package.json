@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "jest",
-    "start": "node src/index.js"
+    "start": "node src/bin/ww.js"
   },
   "author": "",
   "license": "ISC",

@@ -1,7 +1,7 @@
 import express from "express";
 import router from "../routes/notifications.js";
 
-export default app = express();
+const app = express();
 
 app.use(express.json());
 app.use(router);
@@ -23,3 +23,10 @@ app.use(function (req, res, next) {
       next();
     }
   });
+
+  // Define a simple route
+app.get('/', (req, res) => {
+  res.send({'status':'hello'})
+});
+
+export default app
