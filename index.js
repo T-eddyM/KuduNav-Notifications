@@ -1,17 +1,7 @@
-import express, { json } from "express";
+import {app} from "./src/config/index.js";
 
-const app = express();
+const port = process.env.PORT || 3001;
 
-const PORT = process.env.PORT || 80;
-
-app.use(json());
-
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-  });
-
-export default app;
-
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(port, () => {
+    console.log(`Server listening on port ${port}`);
 });
