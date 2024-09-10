@@ -72,19 +72,6 @@ describe('Notifications API', () => {
     expect(response.body.message).toBe('Bus departure in 10 minutes');
   });
 
-  // Test Delete a Notification
-  it('should delete a specific notification by ID', async () => {
-    await request(server) // Use server instance
-      .delete(`/notifications/${notificationId}`)
-      .expect('Content-Type', /json/)
-      .expect(200);
-
-    // Check if the notification was deleted
-    await request(server) // Use server instance
-      .get(`/notifications/${notificationId}`)
-      .expect(404);
-  });
-
   // Test Mark Notification as Sent
   it('should mark a notification as sent', async () => {
     const response = await request(server) // Use server instance
@@ -103,6 +90,19 @@ describe('Notifications API', () => {
       .expect(200);
 
     expect(response.body.status).toBe('read');
+  });
+
+  // Test Delete a Notification
+  it('should delete a specific notification by ID', async () => {
+    await request(server) // Use server instance
+      .delete(`/notifications/${notificationId}`)
+      .expect('Content-Type', /json/)
+      .expect(200);
+
+    // Check if the notification was deleted
+    await request(server) // Use server instance
+      .get(`/notifications/${notificationId}`)
+      .expect(404);
   });
 
   // Test Register Device for Push Notifications

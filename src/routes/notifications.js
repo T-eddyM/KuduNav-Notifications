@@ -73,4 +73,18 @@ router.delete("/notifications/:id", (req, res) => {
 
 });
 
+//mark a notification as sent
+router.post("/notifications/:id/sent", (req, res) => {
+    const { id } = req.params;
+
+    const index = notifications.findIndex(notification => notification.id == id);
+
+    if (index != -1){
+        notifications[index].status = "sent";
+        res.status(200).json(notifications[index]);
+    } else {
+        res.status(404).json({ message: 'Notification not found' });
+    }
+});
+
 export default router;
