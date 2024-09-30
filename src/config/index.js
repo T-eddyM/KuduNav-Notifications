@@ -1,9 +1,11 @@
 import express from "express";
 import router from "../routes/notifications.js";
 import db from "./database.js";
+import scheduleBusNotifications from "../push notification/cronJob.js";
 
 const startServer = async () => {
   await db();
+  //scheduleBusNotifications();
   // Your server initialization logic here
 };
 
