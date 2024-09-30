@@ -1,5 +1,13 @@
 import express from "express";
 import router from "../routes/notifications.js";
+import db from "./database.js";
+
+const startServer = async () => {
+  await db();
+  // Your server initialization logic here
+};
+
+startServer();
 
 const app = express();
 

@@ -1,48 +1,49 @@
 import express from "express";
+import { createNotification, getUserNotifications, getNotification, deleteNotification, markAsRead, markAsSent, registerDevice, getDevice, deleteDevice } from "../controllers/notifications.js";
 
 const router = express.Router();
 
-let notifications = [];
-let users = [
-    {userId: "user1", deviceToken: null, deviceType: null}
-];
 
 //create a notification
-router.post("/notifications", (req, res) => {
+router.post("/create/notification", async (req, res) => {
     const { userId, message, type, scheduleTime } = req.body;
 
-    const newNotification = {
-        id: notifications.length + 1,
-        userId,
-        message,
-        type,
-        status: 'scheduled',
-        scheduleTime,
-        createdAt: new Date().toISOString()
-      };
+    if (userId && message && type && scheduleTime) {
+        const newNotification = await createNotification(userId, type, message, scheduleTime);
+    
+        if (newNotification){
+            res.status(201).json(newNotification);
+        } else{
+            res.status(404).json({message: "Failed creating notification"});
+        }
+    } else {
+        res.status(404).json({message: "At least one attribute missing"});
+    }
 
-      notifications.push(newNotification);
-      res.status(201).json(newNotification);
 });
 
 //get a notification by id
-router.get("/notifications/:id", (req, res) => {
+router.get("/notifications/:id", async (req, res) => {
     const { id } = req.params;
-    const notification = notifications.find(notification => notification.id == id);
-  
-    if (notification) {
+    const notification = await getNotification(id);
+
+    if (notification){
         res.status(200).json(notification);
     } else {
-        res.status(404).json({ message: 'Notification not found' });
+        res.status(404).json({message: "Error fetching notification"});
     }
 });
 
 //get all notifications for a specific user
-router.get("/notifications/user/:userId", (req, res) => {
+router.get("/notifications/user/:userId", async (req, res) => {
     const { userId } = req.params;
-    const userNotifications = notifications.filter(notification => notification.userId == userId);
+    const userNotifications = await getUserNotifications(userId);
 
-    res.status(200).json(userNotifications);
+    if (userNotifications){
+        res.status(200).json(userNotifications);
+    } else {
+        res.status(404).json({message: "Error fetching notifications"});
+    }
 });
 
 //update a specific notification
@@ -62,13 +63,12 @@ router.post("/notifications/:id", (req, res) => {
 });
 
 //delete a notification by id
-router.delete("/notifications/:id", (req, res) => {
+router.delete("/notifications/:id", async (req, res) => {
     const { id } = req.params;
 
-    const index = notifications.findIndex(notification => notification.id == id);
+    const result = await deleteNotification(id);
 
-    if (index != -1){
-        notifications.splice(index, 1);
+    if (result){
         res.status(200).json({ message: 'Notification deleted successfully' });
     } else {
         res.status(404).json({ message: 'Notification not found' });
@@ -77,47 +77,74 @@ router.delete("/notifications/:id", (req, res) => {
 });
 
 //mark a notification as sent
-router.post("/notifications/:id/sent", (req, res) => {
+router.post("/notifications/:id/sent", async (req, res) => {
     const { id } = req.params;
 
-    const index = notifications.findIndex(notification => notification.id == id);
+    const updatedNotification = await markAsSent(id);
 
-    if (index != -1){
-        notifications[index].status = "sent";
-        res.status(200).json(notifications[index]);
+    if (updatedNotification){
+        res.status(200).json(updatedNotification);
     } else {
         res.status(404).json({ message: 'Notification not found' });
     }
 });
 
 //mark a notification as read
-router.post("/notifications/:id/read", (req, res) => {
+router.post("/notifications/:id/read", async (req, res) => {
     const { id } = req.params;
 
-    const index = notifications.findIndex(notification => notification.id == id);
+    const updatedNotification = await markAsRead(id);
 
-    if (index != -1){
-        notifications[index].status = "read";
-        res.status(200).json(notifications[index]);
+    if (updatedNotification){
+        res.status(200).json(updatedNotification);
     } else {
         res.status(404).json({ message: 'Notification not found' });
     }
 });
 
 //register device for push notifications
-router.post("/users/:userId/device", (req, res) => {
-    const { userId } = req.params;
-    const { deviceToken, deviceType} = req.body;
+router.post("/users/register/device", async (req, res) => {
+    const { userId, deviceToken, deviceType} = req.body;
 
-    const index = users.findIndex(user => user.userId == userId);
-
-    if (index != -1){
-        users[index] = {...users[index], deviceToken, deviceType};
-        res.status(200).json({message: "Device registered successfully"});
+    if (userId && deviceToken && deviceType){
+        const savedDevice = await registerDevice(userId, deviceToken, deviceType);
+        if (savedDevice){
+            res.status(200).json({message: "Device registered successfully"});
+        } else {
+            res.status(404).json({message: "Error registering device"});
+        }
     } else {
-        res.status(404).json({message: "User not found"});
+        res.status(404).json({message: "At least one attribute missing"});
     }
 });
+
+//register device for push notifications
+router.get("/users/device/:userId", async (req, res) => {
+    const { userId } = req.params;
+
+    const device = await getDevice(userId);
+
+    if (device) {
+        res.status(200).json(device);
+    } else {
+        res.status(404).json({message: "Error fetching device"})
+    }
+});
+
+//delete a notification by id
+router.delete("/users/remove/device/:id", async (req, res) => {
+    const { id } = req.params;
+
+    const result = await deleteDevice(id);
+
+    if (result){
+        res.status(200).json({ message: 'Device deleted successfully' });
+    } else {
+        res.status(404).json({ message: 'Device not found' });
+    }
+
+});
+
 
 
 export default router;
