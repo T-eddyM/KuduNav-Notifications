@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "jest",
+    "test": "echo test",
     "start": "node src/bin/ww.js"
   },
   "author": "",

@@ -3,9 +3,11 @@ import router from "../routes/notifications.js";
 import db from "./database.js";
 import scheduleBusNotifications from "../push notification/cronJob.js";
 
+import cron from 'node-cron';
+
 const startServer = async () => {
   await db();
-  //scheduleBusNotifications();
+  await scheduleBusNotifications();
   // Your server initialization logic here
 };
 
