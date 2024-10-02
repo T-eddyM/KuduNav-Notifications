@@ -1,8 +1,15 @@
 import express from "express";
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { createNotification, getUserNotifications, getNotification, deleteNotification, markAsRead, markAsSent, registerDevice, getDevice, deleteDevice } from "../controllers/notifications.js";
 
 const router = express.Router();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
+router.get("/docs", (req, res) => {
+    res.sendFile(path.join(__dirname, "../pages/index.html"));
+  });
 
 //create a notification
 router.post("/create/notification", async (req, res) => {
