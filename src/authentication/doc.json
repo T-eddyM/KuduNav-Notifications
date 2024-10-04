@@ -1,0 +1,45 @@
+{
+    "endpoint": {
+      "path": "https://gateway.tandemworkflow.com/api/v1/notification/notification/alert",
+      "method": "POST",
+      "description": "This endpoint is used to send alert notifications.",
+      "authentication": {
+        "required": true,
+        "type": "JWT",
+        "description": "You must include a valid JWT token in the Authorization header."
+      },
+      "request": {
+        "body": {
+          "message": {
+            "type": "string",
+            "example": "Your alert message here."
+          },
+          "type": {
+            "type": "string",
+            "example": "AlertType"
+          }
+        },
+        "required": ["message", "type"]
+      },
+      "response": {
+        "status": 201,
+        "body": {
+          "message": {
+            "type": "string",
+            "example": "Notification created successfully."
+          }
+        }
+      },
+      "errors": [
+        {
+          "status": 400,
+          "message": "At least one attribute missing"
+        },
+        {
+          "status": 404,
+          "message": "Failed creating notification"
+        }
+      ]
+    }
+  }
+  

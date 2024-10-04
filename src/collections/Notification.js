@@ -6,8 +6,8 @@ const notificationSchema = new mongoose.Schema({
         type: String,
         default: uuidv4,
     },
-    userId: {
-        type: String,
+    targetedUsers: {
+        type: Array,
         required: true,
     },
     type: {

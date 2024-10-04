@@ -29,9 +29,9 @@ export async function sendPushNotification(deviceToken, newNotification) {
     }
 };
 
-export async function createNotification(userId, type, message, scheduleTime) {
+export async function createNotification(targetedUsers, type, message, scheduleTime) {
     const newNotification = new Notification({
-        userId,
+        targetedUsers,
         type,
         message,
         scheduleTime,
@@ -66,7 +66,7 @@ export async function getNotification(id){
 
 export async function getUserNotifications(userId){
     try {
-        const notifications = await Notification.find({ userId });
+        const notifications = await Notification.find({targetedUsers: userId });
         return notifications;
     } catch (error) {
         throw new Error('Error fetching notifications: ' + error.message);

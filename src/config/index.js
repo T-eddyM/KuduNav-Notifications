@@ -36,9 +36,4 @@ app.use(function (req, res, next) {
     }
   });
 
-  // Define a simple route
-app.get('/', (req, res) => {
-  res.send({'status':'hello'})
-});
-
 export default app

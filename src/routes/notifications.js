@@ -2,21 +2,28 @@ import express from "express";
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createNotification, getUserNotifications, getNotification, deleteNotification, markAsRead, markAsSent, registerDevice, getDevice, deleteDevice } from "../controllers/notifications.js";
+import authService from "../authentication/middleware.js";
+import { schedule } from "node-cron";
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+//documentation
 router.get("/docs", (req, res) => {
     res.sendFile(path.join(__dirname, "../pages/index.html"));
   });
 
-//create a notification
-router.post("/create/notification", async (req, res) => {
-    const { userId, message, type, scheduleTime } = req.body;
+//webhook for receiving alerts
+router.post("/notification/alert", authService, async (req, res) => {
+    const { message, type } = req.body;
 
-    if (userId && message && type && scheduleTime) {
-        const newNotification = await createNotification(userId, type, message, scheduleTime);
+    if (message && type ) {
+
+        const scheduleTime = Date.now();
+        scheduleTime.setMinutes(scheduleTime.getMinutes() + 1);
+
+        const newNotification = await createNotification(targetedUsers, type, message, scheduleTime);
     
         if (newNotification){
             res.status(201).json(newNotification);
@@ -24,93 +31,126 @@ router.post("/create/notification", async (req, res) => {
             res.status(404).json({message: "Failed creating notification"});
         }
     } else {
-        res.status(404).json({message: "At least one attribute missing"});
+        res.status(400).json({message: "At least one attribute missing"});
+    }
+
+});
+
+//create a notification
+router.post("/create/notification", authService, async (req, res) => {
+    const { targetedUsers, message, type, scheduleTime } = req.body;
+
+    if (targetedUsers && message && type && scheduleTime) {
+        const newNotification = await createNotification(targetedUsers, type, message, scheduleTime);
+    
+        if (newNotification){
+            res.status(201).json(newNotification);
+        } else{
+            res.status(404).json({message: "Failed creating notification"});
+        }
+    } else {
+        res.status(400).json({message: "At least one attribute missing"});
     }
 
 });
 
 //get a notification by id
-router.get("/notifications/:id", async (req, res) => {
+router.get("/notifications/:id", authService, async (req, res) => {
     const { id } = req.params;
-    const notification = await getNotification(id);
 
-    if (notification){
-        res.status(200).json(notification);
+    if (id){
+        const notification = await getNotification(id);
+    
+        if (notification){
+            res.status(200).json(notification);
+        } else {
+            res.status(404).json({message: "Error fetching notification"});
+        }
     } else {
-        res.status(404).json({message: "Error fetching notification"});
+        res.status(400).json({message: "id missing"});
     }
 });
 
 //get all notifications for a specific user
-router.get("/notifications/user/:userId", async (req, res) => {
+router.get("/notifications/user/:userId", authService, async (req, res) => {
     const { userId } = req.params;
-    const userNotifications = await getUserNotifications(userId);
 
-    if (userNotifications){
-        res.status(200).json(userNotifications);
+    if (userId){
+        const userNotifications = await getUserNotifications(userId);
+    
+        if (userNotifications){
+            res.status(200).json(userNotifications);
+        } else {
+            res.status(404).json({message: "Error fetching notifications"});
+        }
     } else {
-        res.status(404).json({message: "Error fetching notifications"});
+        res.status(400).json({message: "userId missing"});
     }
 });
 
 //update a specific notification
-router.post("/notifications/:id", (req, res) => {
+/* router.post("/notifications/:id", authService, (req, res) => {
     const { message, type, scheduleTime } = req.body;
     const { id } = req.params;
 
-    const index = notifications.findIndex(notification => notification.id == id);
-
-    if (index != -1) {
-        notifications[index] = {...notifications[index], message, type, scheduleTime};
-        res.status(200).json(notifications[index]);
-    } else {
-        res.status(404).json({ message: 'Notification not found' });
-    }
-
-});
+}); */
 
 //delete a notification by id
-router.delete("/notifications/:id", async (req, res) => {
+router.delete("/notifications/:id", authService, async (req, res) => {
     const { id } = req.params;
 
-    const result = await deleteNotification(id);
-
-    if (result){
-        res.status(200).json({ message: 'Notification deleted successfully' });
+    if (id) {
+        const result = await deleteNotification(id);
+    
+        if (result){
+            res.status(200).json({ message: 'Notification deleted successfully' });
+        } else {
+            res.status(404).json({ message: 'Notification not found' });
+        }
     } else {
-        res.status(404).json({ message: 'Notification not found' });
+        res.status(400).json({message: "id missing"});
     }
 
 });
 
 //mark a notification as sent
-router.post("/notifications/:id/sent", async (req, res) => {
+router.post("/notifications/:id/sent", authService, async (req, res) => {
     const { id } = req.params;
 
-    const updatedNotification = await markAsSent(id);
-
-    if (updatedNotification){
-        res.status(200).json(updatedNotification);
+    if (id) {
+        const updatedNotification = await markAsSent(id);
+    
+        if (updatedNotification){
+            res.status(200).json(updatedNotification);
+        } else {
+            res.status(404).json({ message: 'Notification not found' });
+        }
     } else {
-        res.status(404).json({ message: 'Notification not found' });
+        res.status(400).json({message: "id missing"});
     }
+
 });
 
 //mark a notification as read
-router.post("/notifications/:id/read", async (req, res) => {
+router.post("/notifications/:id/read", authService, async (req, res) => {
     const { id } = req.params;
 
-    const updatedNotification = await markAsRead(id);
-
-    if (updatedNotification){
-        res.status(200).json(updatedNotification);
+    if (id) {
+        const updatedNotification = await markAsRead(id);
+    
+        if (updatedNotification){
+            res.status(200).json(updatedNotification);
+        } else {
+            res.status(404).json({ message: 'Notification not found' });
+        }
     } else {
-        res.status(404).json({ message: 'Notification not found' });
+        res.status(400).json({message: "id missing"});
     }
+
 });
 
 //register device for push notifications
-router.post("/users/register/device", async (req, res) => {
+router.post("/users/register/device", authService, async (req, res) => {
     const { userId, deviceToken, deviceType} = req.body;
 
     if (userId && deviceToken && deviceType){
@@ -125,31 +165,39 @@ router.post("/users/register/device", async (req, res) => {
     }
 });
 
-//register device for push notifications
-router.get("/users/device/:userId", async (req, res) => {
+//get device for user
+router.get("/users/device/:userId", authService, async (req, res) => {
     const { userId } = req.params;
 
-    const device = await getDevice(userId);
-
-    if (device) {
-        res.status(200).json(device);
+    if (userId){
+        const device = await getDevice(userId);
+    
+        if (device) {
+            res.status(200).json(device);
+        } else {
+            res.status(404).json({message: "Error fetching device"})
+        }
     } else {
-        res.status(404).json({message: "Error fetching device"})
+        res.status(400).json({message: "userId missing"});
     }
+
 });
 
-//delete a notification by id
-router.delete("/users/remove/device/:id", async (req, res) => {
+//delete a device by id
+router.delete("/users/remove/device/:id", authService, async (req, res) => {
     const { id } = req.params;
 
-    const result = await deleteDevice(id);
-
-    if (result){
-        res.status(200).json({ message: 'Device deleted successfully' });
+    if (id) {
+        const result = await deleteDevice(id);
+    
+        if (result){
+            res.status(200).json({ message: 'Device deleted successfully' });
+        } else {
+            res.status(404).json({ message: 'Device not found' });
+        }
     } else {
-        res.status(404).json({ message: 'Device not found' });
+        res.status(400).json({message: "id missing"});
     }
-
 });
 
 

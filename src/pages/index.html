@@ -21,13 +21,15 @@
 
     <h1>Notification API Documentation</h1>
     <p>This document describes the available endpoints for the Notification API.</p>
+    <p><strong>Authentication:</strong> All endpoints require a valid JWT token to be included in the Authorization header.</p>
+    <p><strong>Example:</strong> <code>Authorization: Bearer YOUR_JWT_TOKEN</code></p>
 
     <div class="endpoint">
         <h2>1. Create a Notification</h2>
         <pre><code>POST /create/notification</code></pre>
         <p><strong>Request Body:</strong></p>
         <pre><code>{
-    <span class="key">"userId"</span>: <span class="string">"66fb5669142619b4a21cb7e7"</span>,           <span class="comment">// string</span>
+    <span class="key">"targetedUsers"</span>: [<span class="string">"66fb5669142619b4a21cb7e7"</span>],           <span class="comment">// array of strings</span>
     <span class="key">"message"</span>: <span class="string">"Thanks for joining us!"</span>,        <span class="comment">// string</span>
     <span class="key">"type"</span>: <span class="string">"Welcome"</span>,                         <span class="comment">// string</span>
     <span class="key">"scheduleTime"</span>: <span class="string">"2024-10-01T01:59:49.074+00:00"</span> <span class="comment">// string (ISO 8601)</span>
@@ -36,7 +38,7 @@
         <pre><code>201 Created
 {
     <span class="key">"_id"</span>: <span class="string">"31be96b8-477b-4c59-bea6-5acbe24266e7"</span>,  <span class="comment">// string (UUID format)</span>
-    <span class="key">"userId"</span>: <span class="string">"66fb5669142619b4a21cb7e7"</span>,            <span class="comment">// string</span>
+    <span class="key">"targetedUsers"</span>: [<span class="string">"66fb5669142619b4a21cb7e7"</span>],  <span class="comment">// array of strings</span>
     <span class="key">"type"</span>: <span class="string">"Welcome"</span>,                           <span class="comment">// string</span>
     <span class="key">"message"</span>: <span class="string">"Thanks for joining us, let's get moving!"</span>, <span class="comment">// string</span>
     <span class="key">"status"</span>: <span class="string">"scheduled"</span>,                       <span class="comment">// string</span>
@@ -53,7 +55,7 @@
         <pre><code>200 OK
 {
     <span class="key">"_id"</span>: <span class="string">"string"</span>,                          <span class="comment">// string (UUID)</span>
-    <span class="key">"userId"</span>: <span class="string">"string"</span>,                     <span class="comment">// string</span>
+    <span class="key">"targetedUsers"</span>: [<span class="string">"string"</span>],             <span class="comment">// array of strings</span>
     <span class="key">"message"</span>: <span class="string">"string"</span>,                    <span class="comment">// string</span>
     <span class="key">"type"</span>: <span class="string">"string"</span>,                       <span class="comment">// string</span>
     <span class="key">"status"</span>: <span class="string">"string"</span>,                     <span class="comment">// string</span>
@@ -64,14 +66,14 @@
     </div>
 
     <div class="endpoint">
-        <h2>3. Get All Notifications for a User</h2>
+        <h2>3. Get All Notifications for a Targeted User</h2>
         <pre><code>GET /notifications/user/:userId</code></pre>
         <p><strong>Response:</strong></p>
         <pre><code>200 OK
 [
     {
         <span class="key">"_id"</span>: <span class="string">"string"</span>,                      <span class="comment">// string (UUID)</span>
-        <span class="key">"userId"</span>: <span class="string">"string"</span>,                 <span class="comment">// string</span>
+        <span class="key">"targetedUsers"</span>: [<span class="string">"string"</span>],             <span class="comment">// array of strings</span>
         <span class="key">"message"</span>: <span class="string">"string"</span>,                <span class="comment">// string</span>
         <span class="key">"type"</span>: <span class="string">"string"</span>,                   <span class="comment">// string</span>
         <span class="key">"status"</span>: <span class="string">"string"</span>,                 <span class="comment">// string</span>
@@ -95,12 +97,11 @@
         <pre><code>200 OK
 {
     <span class="key">"_id"</span>: <span class="string">"string"</span>,                       <span class="comment">// string (UUID)</span>
-    <span class="key">"userId"</span>: <span class="string">"string"</span>,                  <span class="comment">// string</span>
+    <span class="key">"targetedUsers"</span>: [<span class="string">"string"</span>],             <span class="comment">// array of strings</span>
     <span class="key">"message"</span>: <span class="string">"string"</span>,                 <span class="comment">// string</span>
     <span class="key">"type"</span>: <span class="string">"string"</span>,                    <span class="comment">// string</span>
-    <span class="key">"status"</span>: <span class="string">"string"</span>,                  <span class="comment">// string</span>
-    <span class="key">"scheduleTime"</span>: <span class="string">"string"</span>,            <span class="comment">// string (ISO 8601)</span>
-    <span class="key">"createdAt"</span>: <span class="string">"string"</span>,               <span class="comment">// string (ISO 8601)</span>
+    <span class="key">"scheduleTime"</span>: <span class="string">"string"</span>,              <span class="comment">// string (ISO 8601)</span>
+    <span class="key">"createdAt"</span>: <span class="string">"string"</span>,                 <span class="comment">// string (ISO 8601)</span>
     <span class="key">"__v"</span>: <span class="number">0</span>                                <span class="comment">// number</span>
 }</code></pre>
     </div>
@@ -122,7 +123,7 @@
         <pre><code>200 OK
 {
     <span class="key">"_id"</span>: <span class="string">"string"</span>,                      <span class="comment">// string (UUID)</span>
-    <span class="key">"userId"</span>: <span class="string">"string"</span>,                 <span class="comment">// string</span>
+    <span class="key">"targetedUsers"</span>: [<span class="string">"string"</span>],             <span class="comment">// array of strings</span>
     <span class="key">"message"</span>: <span class="string">"string"</span>,                <span class="comment">// string</span>
     <span class="key">"type"</span>: <span class="string">"string"</span>,                   <span class="comment">// string</span>
     <span class="key">"scheduleTime"</span>: <span class="string">"string"</span>,           <span class="comment">// string (ISO 8601)</span>
@@ -137,7 +138,7 @@
         <pre><code>200 OK
 {
     <span class="key">"_id"</span>: <span class="string">"string"</span>,                      <span class="comment">// string (UUID)</span>
-    <span class="key">"userId"</span>: <span class="string">"string"</span>,                 <span class="comment">// string</span>
+    <span class="key">"targetedUsers"</span>: [<span class="string">"string"</span>],             <span class="comment">// array of strings</span>
     <span class="key">"message"</span>: <span class="string">"string"</span>,                <span class="comment">// string</span>
     <span class="key">"type"</span>: <span class="string">"string"</span>,                   <span class="comment">// string</span>
     <span class="key">"scheduleTime"</span>: <span class="string">"string"</span>,           <span class="comment">// string (ISO 8601)</span>
@@ -183,6 +184,39 @@
     <span class="key">"message"</span>: <span class="string">"Device deleted successfully"</span> <span class="comment">// string</span>
 }</code></pre>
     </div>
+
+    <div class="endpoint">
+        <h2>11. Send Alert Notification</h2>
+        <pre><code>POST /notification/alert</code></pre>
+        <p><strong>Description:</strong> This endpoint is used to send alert notifications to targeted users.</p>
+        <p><strong>Request Body:</strong></p>
+        <pre><code>{
+        <span class="key">"message"</span>: <span class="string">"Your alert message here."</span>,  <span class="comment">// string</span>
+        <span class="key">"type"</span>: <span class="string">"AlertType"</span>                  <span class="comment">// string</span>
+    }</code></pre>
+        <p><strong>Response:</strong></p>
+        <pre><code>201 Created
+    {
+        <span class="key">"_id"</span>: <span class="string">"unique-notification-id"</span>,  <span class="comment">// string (UUID format)</span>
+        <span class="key">"targetedUsers"</span>: [<span class="string">"userId1", "userId2"</span>],  <span class="comment">// array of strings</span>
+        <span class="key">"message"</span>: <span class="string">"Your alert message here."</span>,  <span class="comment">// string</span>
+        <span class="key">"type"</span>: <span class="string">"AlertType"</span>,                  <span class="comment">// string</span>
+        <span class="key">"status"</span>: <span class="string">"scheduled"</span>,              <span class="comment">// string</span>
+        <span class="key">"scheduleTime"</span>: <span class="string">"2024-10-01T01:59:49.074+00:00"</span>,  <span class="comment">// string (ISO 8601)</span>
+        <span class="key">"createdAt"</span>: <span class="string">"2024-10-01T01:54:49.853+00:00"</span>,  <span class="comment">// string (ISO 8601)</span>
+        <span class="key">"__v"</span>: <span class="number">0</span>                               <span class="comment">// number</span>
+    }</code></pre>
+        <p><strong>Errors:</strong></p>
+        <pre><code>400 Bad Request
+    {
+        <span class="key">"message"</span>: <span class="string">"At least one attribute missing"</span> <span class="comment">// string</span>
+    }</code></pre>
+        <pre><code>404 Not Found
+    {
+        <span class="key">"message"</span>: <span class="string">"Failed creating notification"</span> <span class="comment">// string</span>
+    }</code></pre>
+    </div>
+    
 
 </body>
 </html>
