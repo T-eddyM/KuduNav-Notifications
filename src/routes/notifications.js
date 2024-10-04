@@ -72,7 +72,7 @@ router.get("/notifications/:id", authService, async (req, res) => {
 });
 
 //get all notifications for a specific user
-router.get("/notifications/user/:userId", authService, async (req, res) => {
+router.get("/notifications/user/:userId", async (req, res) => {
     const { userId } = req.params;
 
     if (userId){
