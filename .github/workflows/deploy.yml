@@ -11,6 +11,7 @@ jobs:
 
     env:
       NODE_ENV: test
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
     steps:
     - name: Checkout Code
@@ -25,7 +26,13 @@ jobs:
       run: npm install
 
     - name: Run Tests
-      run: npm test
+      run: npm test -- --coverage
+
+    - name: Upload Coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./coverage/lcov.info  # Adjust this path if necessary
+        token: ${{ secrets.CODECOV_TOKEN }}  # Not required for public repos
 
   terraform:
     runs-on: ubuntu-latest
