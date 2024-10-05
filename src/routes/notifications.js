@@ -5,17 +5,20 @@ import { createNotification, getUserNotifications, getNotification, deleteNotifi
 import authService from "../authentication/middleware.js";
 import { schedule } from "node-cron";
 
+// Assuming this file is named 'example.js'
+const filename = 'notifications.js';
+const dirname = path.resolve(); // Gets the current working directory
+const __filename = path.join(dirname, filename);
+
 const router = express.Router();
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 //documentation
 router.get("/docs", (req, res) => {
-    res.sendFile(path.join(__dirname, "../pages/index.html"));
+    res.sendFile(path.join(__filename, "../src/pages/index.html"));
   });
 
 //webhook for receiving alerts
-router.post("/notification/alert", authService, async (req, res) => {
+router.post("/notification/alert", /* authService, */ async (req, res) => {
     const { message, type } = req.body;
 
     if (message && type ) {
@@ -37,7 +40,7 @@ router.post("/notification/alert", authService, async (req, res) => {
 });
 
 //create a notification
-router.post("/create/notification", authService, async (req, res) => {
+router.post("/create/notification", /* authService, */ async (req, res) => {
     const { targetedUsers, message, type, scheduleTime } = req.body;
 
     if (targetedUsers && message && type && scheduleTime) {
@@ -55,7 +58,7 @@ router.post("/create/notification", authService, async (req, res) => {
 });
 
 //get a notification by id
-router.get("/notifications/:id", authService, async (req, res) => {
+router.get("/notifications/:id", /* authService, */ async (req, res) => {
     const { id } = req.params;
 
     if (id){
@@ -96,7 +99,7 @@ router.get("/notifications/user/:userId", async (req, res) => {
 }); */
 
 //delete a notification by id
-router.delete("/notifications/:id", authService, async (req, res) => {
+router.delete("/notifications/:id", /* authService, */ async (req, res) => {
     const { id } = req.params;
 
     if (id) {
@@ -114,7 +117,7 @@ router.delete("/notifications/:id", authService, async (req, res) => {
 });
 
 //mark a notification as sent
-router.post("/notifications/:id/sent", authService, async (req, res) => {
+router.post("/notifications/:id/sent", /* authService, */ async (req, res) => {
     const { id } = req.params;
 
     if (id) {
@@ -132,7 +135,7 @@ router.post("/notifications/:id/sent", authService, async (req, res) => {
 });
 
 //mark a notification as read
-router.post("/notifications/:id/read", authService, async (req, res) => {
+router.post("/notifications/:id/read", /* authService, */ async (req, res) => {
     const { id } = req.params;
 
     if (id) {
@@ -150,7 +153,7 @@ router.post("/notifications/:id/read", authService, async (req, res) => {
 });
 
 //register device for push notifications
-router.post("/users/register/device", authService, async (req, res) => {
+router.post("/users/register/device", /* authService, */ async (req, res) => {
     const { userId, deviceToken, deviceType} = req.body;
 
     if (userId && deviceToken && deviceType){
@@ -166,7 +169,7 @@ router.post("/users/register/device", authService, async (req, res) => {
 });
 
 //get device for user
-router.get("/users/device/:userId", authService, async (req, res) => {
+router.get("/users/device/:userId", /* authService, */ async (req, res) => {
     const { userId } = req.params;
 
     if (userId){
@@ -184,7 +187,7 @@ router.get("/users/device/:userId", authService, async (req, res) => {
 });
 
 //delete a device by id
-router.delete("/users/remove/device/:id", authService, async (req, res) => {
+router.delete("/users/remove/device/:id", /* authService, */ async (req, res) => {
     const { id } = req.params;
 
     if (id) {

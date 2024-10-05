@@ -19,7 +19,7 @@ describe('Notifications API', () => {
     const response = await request(server) // Use server instance
       .post('/create/notification')
       .send({
-        userId: 'user1',
+        targetedUsers: ['user1'],
         message: 'Bus departure in 30 minutes',
         type: 'bus_departure',
         scheduleTime: new Date().toISOString()
@@ -28,7 +28,7 @@ describe('Notifications API', () => {
       .expect(201);
 
     expect(response.body).toHaveProperty('_id');
-    expect(response.body.userId).toBe('user1');
+    expect(response.body.targetedUsers).toStrictEqual(['user1']);
     expect(response.body.message).toBe('Bus departure in 30 minutes');
     expect(response.body.type).toBe('bus_departure');
     expect(response.body.status).toBe('scheduled');
