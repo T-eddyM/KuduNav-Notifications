@@ -3,5 +3,6 @@ module.exports = {
     transform: {
       '^.+\\.js$': 'babel-jest',
     },
+    forceExit: true,
   };
   

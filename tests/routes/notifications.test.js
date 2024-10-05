@@ -1,17 +1,22 @@
 import request from 'supertest';
 import app from '../../src/config/index.js';
+import db from '../../src/config/database.js';
+import mongoose from 'mongoose';
 
 describe('Notifications API', () => {
   let notificationId; 
   let deviceId;
   let server;
 
-  beforeAll((done) => {
-    server = app.listen(3000, done);
+  beforeAll(async () => {
+    await db();
+    server = app.listen(3000);
   });
 
-  afterAll((done) => {
-    server.close(done);
+  afterAll(async () => {
+    console.log('Closing server and database connections...');
+    await server.close();
+    await mongoose.disconnect();
   });
 
   // Test Create Notification
