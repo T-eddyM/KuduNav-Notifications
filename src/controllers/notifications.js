@@ -46,14 +46,14 @@ export async function createNotification(targetedUsers, type, message, scheduleT
 
 };
 
-export async function getNotifications(){
+/* export async function getNotifications(){
     try {
         const notifications = await Notification.find();
         return notifications;
     } catch (error) {
         throw new Error('Error fetching notifications: ' + error.message);
     }
-};
+}; */
 
 export async function getNotification(id){
     try {
@@ -71,10 +71,6 @@ export async function getUserNotifications(userId){
     } catch (error) {
         throw new Error('Error fetching notifications: ' + error.message);
     }
-};
-
-export async function updateNotification(id){
-
 };
 
 export async function deleteNotification(id){
@@ -136,11 +132,11 @@ export async function getDevice(userId) {
     }
 }
 
-export async function deleteDevice(id){
+/* export async function deleteDevice(id) {
     try {
-        const result = await Device.findByIdAndDelete(id);
-        return result;
+        const result = await Device.deleteOne({ _id: id });
+        return result.deletedCount > 0;
     } catch (error) {
-        throw new Error('Error deleting notification: ' + error.message);
+        throw new Error('Error deleting device: ' + error.message);
     }
-};
+} */

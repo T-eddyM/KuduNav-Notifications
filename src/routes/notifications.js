@@ -18,7 +18,7 @@ router.get("/docs", (req, res) => {
   });
 
 //webhook for receiving alerts
-router.post("/notification/alert", /* authService, */ async (req, res) => {
+router.post("/notification/alert", authService,  async (req, res) => {
     const { message, type } = req.body;
 
     if (message && type ) {
@@ -90,13 +90,6 @@ router.get("/notifications/user/:userId", async (req, res) => {
         res.status(400).json({message: "userId missing"});
     }
 });
-
-//update a specific notification
-/* router.post("/notifications/:id", authService, (req, res) => {
-    const { message, type, scheduleTime } = req.body;
-    const { id } = req.params;
-
-}); */
 
 //delete a notification by id
 router.delete("/notifications/:id", /* authService, */ async (req, res) => {
@@ -187,7 +180,7 @@ router.get("/users/device/:userId", /* authService, */ async (req, res) => {
 });
 
 //delete a device by id
-router.delete("/users/remove/device/:id", /* authService, */ async (req, res) => {
+/* router.delete("/users/remove/device/:id", /* authService,  async (req, res) => {
     const { id } = req.params;
 
     if (id) {
@@ -201,7 +194,7 @@ router.delete("/users/remove/device/:id", /* authService, */ async (req, res) =>
     } else {
         res.status(400).json({message: "id missing"});
     }
-});
+}); */
 
 
 

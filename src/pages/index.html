@@ -84,7 +84,7 @@
 ]</code></pre>
     </div>
 
-    <div class="endpoint">
+    <!-- <div class="endpoint">
         <h2>4. Update a Notification</h2>
         <pre><code>POST /notifications/:id</code></pre>
         <p><strong>Request Body:</strong></p>
@@ -104,10 +104,10 @@
     <span class="key">"createdAt"</span>: <span class="string">"string"</span>,                 <span class="comment">// string (ISO 8601)</span>
     <span class="key">"__v"</span>: <span class="number">0</span>                                <span class="comment">// number</span>
 }</code></pre>
-    </div>
+    </div> -->
 
     <div class="endpoint">
-        <h2>5. Delete a Notification</h2>
+        <h2>4. Delete a Notification</h2>
         <pre><code>DELETE /notifications/:id</code></pre>
         <p><strong>Response:</strong></p>
         <pre><code>200 OK
@@ -117,7 +117,7 @@
     </div>
 
     <div class="endpoint">
-        <h2>6. Mark a Notification as Sent</h2>
+        <h2>5. Mark a Notification as Sent</h2>
         <pre><code>POST /notifications/:id/sent</code></pre>
         <p><strong>Response:</strong></p>
         <pre><code>200 OK
@@ -132,7 +132,7 @@
     </div>
 
     <div class="endpoint">
-        <h2>7. Mark a Notification as Read</h2>
+        <h2>6. Mark a Notification as Read</h2>
         <pre><code>POST /notifications/:id/read</code></pre>
         <p><strong>Response:</strong></p>
         <pre><code>200 OK
@@ -147,7 +147,7 @@
     </div>
 
     <div class="endpoint">
-        <h2>8. Register Device for Push Notifications</h2>
+        <h2>7. Register Device for Push Notifications</h2>
         <pre><code>POST /users/register/device</code></pre>
         <p><strong>Request Body:</strong></p>
         <pre><code>{
@@ -163,7 +163,7 @@
     </div>
 
     <div class="endpoint">
-        <h2>9. Get Device by User ID</h2>
+        <h2>8. Get Device by User ID</h2>
         <pre><code>GET /users/device/:userId</code></pre>
         <p><strong>Response:</strong></p>
         <pre><code>200 OK
@@ -176,7 +176,7 @@
     </div>
 
     <div class="endpoint">
-        <h2>10. Delete Device</h2>
+        <h2>9. Delete Device</h2>
         <pre><code>DELETE /users/remove/device/:id</code></pre>
         <p><strong>Response:</strong></p>
         <pre><code>200 OK
@@ -186,7 +186,7 @@
     </div>
 
     <div class="endpoint">
-        <h2>11. Send Alert Notification</h2>
+        <h2>10. Webhook for safety reports</h2>
         <pre><code>POST /notification/alert</code></pre>
         <p><strong>Description:</strong> This endpoint is used to send alert notifications to targeted users.</p>
         <p><strong>Request Body:</strong></p>

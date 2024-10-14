@@ -62,22 +62,6 @@ describe('Notifications API', () => {
     expect(response.body.length).toBeGreaterThan(0);
   });
 
-  // Test Update a Notification
-  /* it('should update an existing notification by ID', async () => {
-    const response = await request(server) // Use server instance
-      .post(`/notifications/${notificationId}`)
-      .send({
-        message: 'Bus departure in 10 minutes',
-        type: 'bus_departure',
-        scheduleTime: new Date().toISOString()
-      })
-      .expect('Content-Type', /json/)
-      .expect(200);
-
-    expect(response.body.id).toBe(notificationId);
-    expect(response.body.message).toBe('Bus departure in 10 minutes');
-  }); */
-
   // Test Mark Notification as Sent
   it('should mark a notification as sent', async () => {
     const response = await request(server) // Use server instance
@@ -138,30 +122,24 @@ describe('Notifications API', () => {
     expect(response.body.length).toBeGreaterThan(0);
   });
 
-  /* // Test Delete a Device
-  it('should delete a specific notification by ID', async () => {
-    await request(server) // Use server instance
+  //Test delete device
+  /* it('should delete a specific device by ID', async () => {
+    const deleteResponse = await request(server) // Use server instance
       .delete(`/users/remove/device/${deviceId}`)
-      .expect('Content-Type', /json/)
-      .expect(200);
+      .expect('Content-Type', /json/);
+
+    // Log the response to help with debugging
+    console.log('Delete response:', deleteResponse.body);
+
+    // Check if the delete response message is correct
+    expect(deleteResponse.status).toBe(200);
+    expect(deleteResponse.body.message).toBe('Device deleted successfully');
 
     // Check if the device was deleted
     await request(server) // Use server instance
       .get(`/users/remove/device/${deviceId}`)
+      .expect('Content-Type', /json/)
       .expect(404);
   }); */
 
-  /* // Test Manage User Notification Preferences
-  it('should manage user notification preferences', async () => {
-    const response = await request(server) // Use server instance
-      .post('/users/user1/preferences')
-      .send({
-        receivePushNotifications: true,
-        notificationTypes: ['bus_departure', 'schedule_change']
-      })
-      .expect('Content-Type', /json/)
-      .expect(200);
-
-    expect(response.body.message).toBe('Notification preferences updated successfully');
-  }); */
 });

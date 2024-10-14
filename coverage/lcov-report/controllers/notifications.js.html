@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">57.14% </span>
+                <span class="strong">68.29% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>28/49</span>
+                <span class='fraction'>28/41</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.66% </span>
+                <span class="strong">88.88% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>8/12</span>
+                <span class='fraction'>8/9</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">57.14% </span>
+                <span class="strong">68.29% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>28/49</span>
+                <span class='fraction'>28/41</span>
             </div>
         
             
@@ -204,11 +204,7 @@
 <a name='L139'></a><a href='#L139'>139</a>
 <a name='L140'></a><a href='#L140'>140</a>
 <a name='L141'></a><a href='#L141'>141</a>
-<a name='L142'></a><a href='#L142'>142</a>
-<a name='L143'></a><a href='#L143'>143</a>
-<a name='L144'></a><a href='#L144'>144</a>
-<a name='L145'></a><a href='#L145'>145</a>
-<a name='L146'></a><a href='#L146'>146</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L142'></a><a href='#L142'>142</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -257,11 +253,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -284,10 +280,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -347,11 +339,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import axios from "axios";
 import dotenv from "dotenv";
@@ -401,14 +393,14 @@ export async function createNotification(targetedUsers, type, message, scheduleT
 &nbsp;
 };
 &nbsp;
-export async function <span class="fstat-no" title="function not covered" >getNotifications(</span>){
-<span class="cstat-no" title="statement not covered" >    try {</span>
-        const notifications = <span class="cstat-no" title="statement not covered" >await Notification.find();</span>
-<span class="cstat-no" title="statement not covered" >        return notifications;</span>
+/* export async function getNotifications(){
+    try {
+        const notifications = await Notification.find();
+        return notifications;
     } catch (error) {
-<span class="cstat-no" title="statement not covered" >        throw new Error('Error fetching notifications: ' + error.message);</span>
+        throw new Error('Error fetching notifications: ' + error.message);
     }
-};
+}; */
 &nbsp;
 export async function getNotification(id){
     try {
@@ -426,10 +418,6 @@ export async function getUserNotifications(userId){
     } catch (error) {
 <span class="cstat-no" title="statement not covered" >        throw new Error('Error fetching notifications: ' + error.message);</span>
     }
-};
-&nbsp;
-export async function <span class="fstat-no" title="function not covered" >updateNotification(</span>id){
-&nbsp;
 };
 &nbsp;
 export async function deleteNotification(id){
@@ -491,21 +479,21 @@ export async function getDevice(userId) {
     }
 }
 &nbsp;
-export async function <span class="fstat-no" title="function not covered" >deleteDevice(</span>id){
-<span class="cstat-no" title="statement not covered" >    try {</span>
-        const result = <span class="cstat-no" title="statement not covered" >await Device.findByIdAndDelete(id);</span>
-<span class="cstat-no" title="statement not covered" >        return result;</span>
+/* export async function deleteDevice(id) {
+    try {
+        const result = await Device.deleteOne({ _id: id });
+        return result.deletedCount &gt; 0;
     } catch (error) {
-<span class="cstat-no" title="statement not covered" >        throw new Error('Error deleting notification: ' + error.message);</span>
+        throw new Error('Error deleting device: ' + error.message);
     }
-};</pre></td></tr></table></pre>
+} */</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-10-05T14:02:59.281Z
+                at 2024-10-14T18:34:19.389Z
             </div>
         <script src="../prettify.js"></script>
         <script>
