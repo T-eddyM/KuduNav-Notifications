@@ -9,7 +9,7 @@ const dirname = path.resolve();
 
 let serviceAccountPath = path.join(dirname, 'src', 'constants', filename);
 
-const pathSegments = serviceAccountPath.split(path.sep);
+/* const pathSegments = serviceAccountPath.split(path.sep);
 
 const occurrences = pathSegments.filter(segment => segment === 'KuduNav-Notifications').length;
 
@@ -20,7 +20,7 @@ if (occurrences > 1) {
 
 // Trim any potential leading/trailing slashes after modification
 serviceAccountPath = serviceAccountPath.replace(/\/{2,}/g, '/');
-
+ */
 const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf-8'));
 
 // Initialize the Firebase Admin SDK
