@@ -7,7 +7,7 @@ const filename = 'kudunot-firebase-adminsdk-csi12-2bbc9e96d2.json';
 
 const dirname = path.resolve();
 
-const serviceAccountPath = path.join(dirname, 'src', 'constants', filename);
+let serviceAccountPath = path.join(dirname, 'src', 'constants', filename);
 
 // Check if 'KuduNav-Notifications' is in the path more than once
 if ((serviceAccountPath.match(/KuduNav-Notifications/g) || []).length > 1) {
