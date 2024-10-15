@@ -9,10 +9,15 @@ const dirname = path.resolve();
 
 let serviceAccountPath = path.join(dirname, 'src', 'constants', filename);
 
-// Check if 'KuduNav-Notifications' is in the path more than once
-if ((serviceAccountPath.match(/KuduNav-Notifications/g) || []).length > 1) {
+// Split the path into segments
+const pathSegments = serviceAccountPath.split(path.sep);
+
+// Count occurrences of 'KuduNav-Notifications'
+const occurrences = pathSegments.filter(segment => segment === 'KuduNav-Notifications').length;
+
+if (occurrences > 1) {
     // Remove one instance of 'KuduNav-Notifications'
-    serviceAccountPath = serviceAccountPath.replace(/(.*)(KuduNav-Notifications)(.*)\1/, '$1$2$3');
+    serviceAccountPath = serviceAccountPath.replace(/(KuduNav-Notifications)(?=.*KuduNav-Notifications)/, '');
 }
 
 const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf-8'));
