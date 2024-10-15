@@ -5,7 +5,6 @@ import { createNotification, getUserNotifications, getNotification, deleteNotifi
 import authService from "../authentication/middleware.js";
 import { schedule } from "node-cron";
 
-// Assuming this file is named 'example.js'
 const filename = 'notifications.js';
 const dirname = path.resolve(); // Gets the current working directory
 const __filename = path.join(dirname, filename);
