@@ -1,7 +1,7 @@
 import express from "express";
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { createNotification, getUserNotifications, getNotification, deleteNotification, markAsRead, markAsSent, registerDevice, getDevice, deleteDevice } from "../controllers/notifications.js";
+import { createNotification, getUserNotifications, getNotification, deleteNotification, markAsRead, markAsSent, registerDevice, getDevice } from "../controllers/notifications.js";
 import authService from "../authentication/middleware.js";
 import { schedule } from "node-cron";
 

@@ -1,33 +1,45 @@
-import axios from "axios";
 import dotenv from "dotenv";
+import admin from "../push notification/firebase.js"
 
 import Notification from "../collections/Notification.js";
 import Device from "../collections/Device.js";
 
 dotenv.config();
 
-const FCM_SERVER_KEY = process.env.FCM_SERVER_KEY;
-
-export async function sendPushNotification(deviceToken, newNotification) {
+export const sendNotification = async (notification) => {
     try {
-        await axios.post('https://fcm.googleapis.com/fcm/send', {
-            to: deviceToken,
-            notification: {
-                title: newNotification.title,
-                body: newNotification.message,
-            },
-        }, {
-            headers: {
-                'Authorization': `key=${FCM_SERVER_KEY}`,
-                'Content-Type': 'application/json'
-            }
-        });
-        return { success: true };
+      // Fetch the device tokens for all targeted users
+      const devices = await Device.find({
+        userId: { $in: notification.targetedUsers }, // Find devices with userId in targetedUsers array
+      });
+  
+      // If no devices found return
+      if (devices.length === 0) {
+        console.log(`No devices found for targeted users: ${notification.targetedUsers}`);
+        return;
+      }
+  
+      // FCM message payload for each device
+      const messages = devices.map((device) => ({
+        notification: {
+          title: notificarion.type,
+          body: notification.message,
+        },
+        token: device.deviceToken, // Device token for each user
+      }));
+  
+      // Send notifications via FCM in batch
+      const response = await admin.messaging().sendAll(messages);
+      console.log(`Notifications sent for notification ${notification._id}:`, response.successCount);
+  
+      // Mark the notification as sent
+      notification.status = "sent";
+      await notification.save();
+  
     } catch (error) {
-        console.error('Error sending notification:', error);
-        return { success: false, error: error.message };
+      console.error('Error sending notification:', error);
     }
-};
+  };
 
 export async function createNotification(targetedUsers, type, message, scheduleTime) {
     const newNotification = new Notification({
@@ -45,15 +57,6 @@ export async function createNotification(targetedUsers, type, message, scheduleT
     }
 
 };
-
-/* export async function getNotifications(){
-    try {
-        const notifications = await Notification.find();
-        return notifications;
-    } catch (error) {
-        throw new Error('Error fetching notifications: ' + error.message);
-    }
-}; */
 
 export async function getNotification(id){
     try {

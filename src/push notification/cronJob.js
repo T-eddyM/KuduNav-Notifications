@@ -1,10 +1,40 @@
 import cron from 'node-cron';
-import axios from 'axios';
-import { createNotification } from '../controllers/notifications.js';
+import Notification from '../collections/Notification.js';
+import { sendNotification } from '../controllers/notifications.js';
 
 // Define the cron job
 const scheduleBusNotifications = async () => {
-    cron.schedule('*/10 * * * * ', async () => { // Runs every 10 minutes
+    // Define the cron job that runs every minute
+    cron.schedule('* * * * *', async () => {
+        try {
+        console.log('Checking for scheduled notifications...');
+    
+        const now = new Date();
+        
+        // Fetch notifications that are due and have not been sent
+        const notifications = await Notification.find({
+            scheduledTime: { $lte: now },
+            status: "scheduled",
+        });
+    
+        // Send each due notification
+        for (const notification of notifications) {
+            await sendNotification(notification);
+        }
+        } catch (error) {
+        console.error('Error in cron job:', error);
+        }
+    });
+};
+
+export default scheduleBusNotifications;
+
+
+
+
+
+/*
+cron.schedule('10 * * * * ', async () => { // Runs every 10 minutes
         /* try {
             // Make the request to the external API
             const busSchedule = await axios.get('http://ec2-52-40-184-137.us-west-2.compute.amazonaws.com/api/v1/bus-schedule/');
@@ -55,8 +85,7 @@ const scheduleBusNotifications = async () => {
             }
         } catch (error) {
             console.error('Error fetching bus schedules or creating notifications:', error.message);
-        } */
-    });
-};
+        } 
+        });
 
-export default scheduleBusNotifications;
+*/
