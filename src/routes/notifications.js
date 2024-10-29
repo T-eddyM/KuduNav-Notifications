@@ -78,7 +78,7 @@ router.get("/notifications/user/:userId", async (req, res) => {
     const { userId } = req.params;
 
     if (userId){
-        const userNotifications = await getUserNotifications(userId);
+        const userNotifications = await getUserNotifications();
     
         if (userNotifications){
             res.status(200).json(userNotifications);

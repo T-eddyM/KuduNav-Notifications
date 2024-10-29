@@ -1,5 +1,5 @@
 TN:
-SF:src\authentication\middleware.js
+SF:src/authentication/middleware.js
 FN:7,(anonymous_0)
 FN:19,(anonymous_1)
 FNF:2
@@ -36,7 +36,7 @@ BRF:4
 BRH:0
 end_of_record
 TN:
-SF:src\collections\Device.js
+SF:src/collections/Device.js
 FNF:0
 FNH:0
 DA:4,1
@@ -47,7 +47,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src\collections\Notification.js
+SF:src/collections/Notification.js
 FNF:0
 FNH:0
 DA:4,1
@@ -58,7 +58,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src\config\database.js
+SF:src/config/database.js
 FN:5,(anonymous_0)
 FNF:1
 FNH:1
@@ -76,7 +76,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src\config\index.js
+SF:src/config/index.js
 FN:8,(anonymous_0)
 FN:21,(anonymous_1)
 FNF:2
@@ -106,7 +106,7 @@ BRF:2
 BRH:0
 end_of_record
 TN:
-SF:src\controllers\notifications.js
+SF:src/controllers/notifications.js
 FN:9,(anonymous_0)
 FN:23,(anonymous_1)
 FN:44,createNotification
@@ -180,11 +180,12 @@ LF:47
 LH:28
 BRDA:17,0,0,0
 BRDA:17,0,1,0
-BRF:2
-BRH:0
+BRDA:70,1,0,1
+BRF:3
+BRH:1
 end_of_record
 TN:
-SF:src\push notification\cronJob.js
+SF:src/push notification/cronJob.js
 FN:6,(anonymous_0)
 FN:8,(anonymous_1)
 FNF:2
@@ -206,7 +207,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src\push notification\firebase.js
+SF:src/push notification/firebase.js
 FNF:0
 FNH:0
 DA:4,1
@@ -218,7 +219,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src\routes\notifications.js
+SF:src/routes/notifications.js
 FN:15,(anonymous_0)
 FN:20,(anonymous_1)
 FN:42,(anonymous_2)

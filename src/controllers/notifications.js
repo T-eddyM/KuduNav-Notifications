@@ -67,7 +67,7 @@ export async function getNotification(id){
     }
 };
 
-export async function getUserNotifications(userId){
+export async function getUserNotifications(userId="user1"){
     try {
         const notifications = await Notification.find({targetedUsers: userId });
         return notifications;
