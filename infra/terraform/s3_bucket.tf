@@ -1,6 +1,6 @@
 # Data source for existing S3 bucket
 data "aws_s3_bucket" "terraform_state" {
-  bucket = "campus-notifications-bucket"
+  bucket = "campus-notifications"
 }
 
 # Server-side encryption configuration for the existing bucket

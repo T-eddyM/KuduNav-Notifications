@@ -1,8 +1,8 @@
 terraform {
   backend "s3" {
-    bucket         = "campus-notifications-bucket"  # Replace with your S3 bucket name
+    bucket         = "campus-notifications"  # Replace with your S3 bucket name
     key            = "terraform/terraform.tfstate"  # The path to the state file within the bucket
-    region         = "us-west-2"
+    region         = "us-east-1"
     encrypt        = true  # Encrypt the state file
   }
 }
